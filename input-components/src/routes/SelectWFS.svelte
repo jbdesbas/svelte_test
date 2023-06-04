@@ -7,25 +7,23 @@ TODO : desactiver la récupération des géométries et du geojson
 -->
 
 <script>
-  import { onMount } from 'svelte';
-    import Select from 'svelte-select';
-    import * as aq from 'arquero';
+     import { onMount } from 'svelte';
+     import Select from 'svelte-select';
     
      export let placeholder;
      export let wfs_endpoint;
      export let layername ;
      export let search_field;
      export let group_by_dept = false; 
-     export let label = function(e) { return e.properties[search_name] }
-     export let group = function(e) { return null}; // Function
+     export let label = function(e) { return e.properties[search_field] }
+     export let group = function(e) { return null};
      
-     export let value = [];
      export let geojson = {type:'FeatureCollection', 'features':[]};
 
      let filterText;
      let emptyText;
-     let dataTable = aq.table({label:[], value:[]});
-     let options = dataTable.objects();
+     let value = [];
+
 
     function generate_geojson(){
             let features = [];
@@ -56,10 +54,14 @@ TODO : desactiver la récupération des géométries et du geojson
             data2.push({value:c, label:label(c)} )
             }
         )
-        dataTable = aq.from(data2)
-        options = dataTable.derive({ name_length: d => aq.op.length(d.label) }).orderby('name_length').objects();
-        
-        return options;
+        data2.sort(function (a, b) {
+            if (a.value.properties[search_field].length < b.value.properties[search_field].length){
+                return -1;}
+            else {
+                return 1;}
+        });
+
+        return data2;
       }
 
     onMount(() => {
