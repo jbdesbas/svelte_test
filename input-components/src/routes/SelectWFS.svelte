@@ -17,7 +17,7 @@ TODO : desactiver la récupération des géométries et du geojson
      export let nom_commune = 'nom_min';
      export let group_by_dept = false; 
      export let value = [];
-     export let featuresCollection = {type:'geojson', data:{type:'FeatureCollection', 'features':[]}};
+     export let featuresCollection = {type:'FeatureCollection', 'features':[]};
      
      
 
@@ -31,7 +31,7 @@ TODO : desactiver la récupération des géométries et du geojson
             value.forEach(function(e){
                 features.push({type:'Feature', 'geometry':e.geom, 'properties':{'nom':e.label}})
             })
-            featuresCollection.data.features = features;
+            featuresCollection.features = features;
     }   
 
     function group(e){

@@ -17,9 +17,10 @@
      $: {
         if (map != null) {
             if (map.loaded()){
-                map.getSource('maine').setData(geojson.data)
+                map.getSource('maine').setData(geojson)
+                console.log(geojson)
             }else{
-                map.on('load', () => map.getSource('maine').setData(geojson.data))
+                map.on('load', () => map.getSource('maine').setData(geojson))
             }
         }
     }
@@ -36,7 +37,7 @@
         });
         
         map.on('load', function(){
-            map.addSource('maine', {type:'geojson', data:geojson.data});
+            map.addSource('maine', {type:'geojson', data:geojson});
             map.addLayer({
                 'id': 'maine',
                 'type': 'fill',
