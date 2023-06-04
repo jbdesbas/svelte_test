@@ -22,7 +22,7 @@
 
 <MySelect 
     bind:geojson={featuresCollection}
-    group_by_dept={false} group={(e) => e.properties.code.substring(0,2) }
+    group={(e) => e.properties.code.substring(0,2) }
     wfs_endpoint='https://www.geo2france.fr/geoserver/spld/ows' layername='spld:communes' label={(e) => label(e)} search_field='nom' 
     placeholder="Nom de la commune"/>
     

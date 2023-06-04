@@ -1,12 +1,22 @@
 <!--
-@component
-Ce composant permet de sélectionner une ou plusieurs communes dans un select depuis un flux wfs.
-Le résultat peut être récupéré directement en geojson.
+@component SelectWFS
+@description Composant qui permet de sélectionner une ou plusieurs entités depuis un flux WFS.
 
-TODO : desactiver la récupération des géométries et du geojson
+@prop {string} placeholder - Texte affiché dans le bouton.
+@prop {string} wfs_endpoint - URL du service WFS utilisé pour récupérer les entités.
+@prop {string} layername - Nom de la couche dans le service WFS contenant les entités.
+@prop {string} search_field - Champ utilisé pour la recherche des entités.
+@prop {function} label - Fonction qui renvoie l'étiquette à afficher pour chaque entité. Par défaut, utilise la valeur du champ `search_field`.
+@prop {function} group - Fonction de regroupement des entités. Par défaut, aucun regroupement n'est effectué.
+@prop {Object} geojson - Objet GeoJSON contenant les entités sélectionnées.
+
+
+TODO : permettre de passer des id pour pré-remplir le select (recherche IN dans le WFS)
 -->
 
 <script>
+
+    
      import { onMount } from 'svelte';
      import Select from 'svelte-select';
     
@@ -14,7 +24,6 @@ TODO : desactiver la récupération des géométries et du geojson
      export let wfs_endpoint;
      export let layername ;
      export let search_field;
-     export let group_by_dept = false; 
      export let label = function(e) { return e.properties[search_field] }
      export let group = function(e) { return null};
      
@@ -48,13 +57,14 @@ TODO : desactiver la récupération des géométries et du geojson
         if (data.features.length < 1){
             emptyText='Aucune correspondance'
             return []
-        }
+        };
         let data2 = [];
         data.features.forEach((c) => { //ajouter directement à la table arquero ?
             data2.push({value:c, label:label(c)} )
             }
-        )
-        data2.sort(function (a, b) {
+        );
+        
+        data2.sort(function (a, b) { //Sort by name length (short first)
             if (a.value.properties[search_field].length < b.value.properties[search_field].length){
                 return -1;}
             else {
