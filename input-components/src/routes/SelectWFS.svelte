@@ -23,13 +23,13 @@ TODO : desactiver la récupération des géométries et du geojson
 
      let filterText;
      let emptyText;
-     let dataTable = aq.table({label:[], value:[], geom:[]});
+     let dataTable = aq.table({label:[], value:[]});
      let options = dataTable.objects();
 
     function generate_geojson(){
             let features = [];
             value.forEach(function(e){
-                features.push({type:'Feature', 'geometry':e.geom, 'properties':{'nom':e.label}})
+                features.push(e.value)
             })
             featuresCollection.features = features;
     }   
@@ -60,11 +60,11 @@ TODO : desactiver la récupération des géométries et du geojson
         }
         let data2 = [];
         data.features.forEach((c) => { //ajouter directement à la table arquero ?
-            data2.push({value:c.properties.code, label:`${c.properties.nom_min} (${c.properties.code})`, geom:c.geometry} )
+            data2.push({value:c, label:`${c.properties.nom_min} (${c.properties.code})`} )
             }
         )
         dataTable = aq.from(data2)
-        options = dataTable.derive({ name_length: d => aq.op.length(d.label), group: d=> aq.op.substring(d.value,0,2) }).orderby('name_length').objects();
+        options = dataTable.derive({ name_length: d => aq.op.length(d.label), group: d=> aq.op.substring(d.value.properties.code,0,2) }).orderby('name_length').objects();
         
         return options;
       }

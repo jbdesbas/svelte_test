@@ -17,7 +17,7 @@
 
 <MySelect bind:value={selectedCommunes} bind:featuresCollection group_by_dept={false} />
 <p>{#if selectedCommunes} 
-    {#each selectedCommunes as commune} <li>{commune.value}</li> {commune.geom }
+    {#each selectedCommunes as commune} <li>{commune.value.properties.nom_min}</li>
 
     {/each}
 <Map geojson={featuresCollection}/>
