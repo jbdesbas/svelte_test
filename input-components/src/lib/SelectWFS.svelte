@@ -13,7 +13,7 @@
 
 TODO : permettre de passer des id pour pré-remplir le select (recherche IN dans le WFS)
 -->
-
+<svelte:options tag="select-wfs" />
 <script>
 
     

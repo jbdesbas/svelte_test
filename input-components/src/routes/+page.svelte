@@ -3,8 +3,8 @@
     Le select permet de récupérer la liste des communes sélectionnées, et le geojson de ces communes (feature collection)
     
     ********/
-    import MySelect from "./SelectWFS.svelte";
-    import Map from "./map.svelte";
+    import MySelect from "$lib/SelectWFS.svelte";
+    import Map from "$lib/map.svelte";
     
     let selectedCommunes;
     let featuresCollection;
