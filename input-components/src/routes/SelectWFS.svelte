@@ -11,15 +11,16 @@ TODO : desactiver la récupération des géométries et du geojson
     import Select from 'svelte-select';
     import * as aq from 'arquero';
     
-     export let wfs_endpoint = 'https://www.geo2france.fr/geoserver/spld/ows';
-     export let layername = 'spld:communes';
-     export let code_commune = 'code';
-     export let nom_commune = 'nom_min';
+     export let placeholder;
+     export let wfs_endpoint;
+     export let layername ;
+     export let search_field;
      export let group_by_dept = false; 
+     export let label = function(e) { return e.properties[search_name] }
+     export let group = function(e) { return null}; // Function
+     
      export let value = [];
-     export let featuresCollection = {type:'FeatureCollection', 'features':[]};
-     
-     
+     export let geojson = {type:'FeatureCollection', 'features':[]};
 
      let filterText;
      let emptyText;
@@ -31,17 +32,9 @@ TODO : desactiver la récupération des géométries et du geojson
             value.forEach(function(e){
                 features.push(e.value)
             })
-            featuresCollection.features = features;
+            geojson.features = features;
     }   
 
-    function group(e){
-        if(group_by_dept){
-            return e.group;
-        }
-        else{
-            return null;
-        }
-    }
      
      async function fetchOptions() {
         //console.log(value)
@@ -52,7 +45,7 @@ TODO : desactiver la récupération des géométries et du geojson
             emptyText='Taper les premières lettres pour commencer'
             return []
         }
-        const response = await fetch(`${wfs_endpoint}?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=${layername}&OUTPUTFORMAT=application%2Fjson&&srsName=EPSG:4326&propertyName=${nom_commune},${code_commune},geometry&CQL_FILTER=${nom_commune}%20ilike%20%27${filterText}%25%27`);
+        const response = await fetch(`${wfs_endpoint}?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=${layername}&OUTPUTFORMAT=application%2Fjson&&srsName=EPSG:4326&CQL_FILTER=${search_field}%20ilike%20%27${filterText}%25%27`);
         const data = await response.json();
         if (data.features.length < 1){
             emptyText='Aucune correspondance'
@@ -60,11 +53,11 @@ TODO : desactiver la récupération des géométries et du geojson
         }
         let data2 = [];
         data.features.forEach((c) => { //ajouter directement à la table arquero ?
-            data2.push({value:c, label:`${c.properties.nom_min} (${c.properties.code})`} )
+            data2.push({value:c, label:label(c)} )
             }
         )
         dataTable = aq.from(data2)
-        options = dataTable.derive({ name_length: d => aq.op.length(d.label), group: d=> aq.op.substring(d.value.properties.code,0,2) }).orderby('name_length').objects();
+        options = dataTable.derive({ name_length: d => aq.op.length(d.label) }).orderby('name_length').objects();
         
         return options;
       }
@@ -74,7 +67,7 @@ TODO : desactiver la récupération des géométries et du geojson
     });
 </script>
 
-<Select bind:filterText bind:value loadOptions={fetchOptions} placeholder="Nom de la commune" groupBy="{(e) => group(e)}" multiple on:change={generate_geojson} on:clear={generate_geojson}>
+<Select bind:filterText bind:value loadOptions={fetchOptions} placeholder={placeholder} groupBy="{(e) => group(e.value)}" multiple on:change={generate_geojson} on:clear={generate_geojson}>
         <div slot="empty">{emptyText}</div>
 </Select>
 
